@@ -1,6 +1,6 @@
 #!/usr/local/bin/python
 
-fn = 'files/2-1.txt'
+fn = 'files/5-1.txt'
 
 def read_and_parse(file):
     """Reads file line-by-line then converts items to integers"""
@@ -27,7 +27,8 @@ def find_opcode_inputs(series, index, instruction):
 def opcode_1(series, index, instruction):
     """Adds numbers in appropriate cell indices"""
     input_1, input_2 = find_opcode_inputs(series, index, instruction)
-    series[series[index+3]] = input_1 + input_2 # 3rd param is always 0
+    series[series[index+3]] = (int(input_1)
+                            + int(input_2)) # 3rd param is always 0
 
 def opcode_2(series, index, instruction):
     """Multiplies numbers in appropriate cell indices"""
@@ -36,10 +37,28 @@ def opcode_2(series, index, instruction):
 
 def opcode_3(series, index):
     """Takes an input and stores it at an index"""
-    pass
+    number = input("What is the input? ")
+    series[series[index+1]] = number
 
 def opcode_4(series, index):
     """Outputs the value at an index"""
+    output = series[series[index+1]]
+    print(f"Output from index {index}: {output}")
+
+def opcode_5(series, index):
+    """Pass"""
+    pass
+
+def opcode_6(series, index):
+    """Pass"""
+    pass
+
+def opcode_7(series, index):
+    """Pass"""
+    pass
+
+def opcode_8(series, index):
+    """Pass"""
     pass
 
 def parse_instruction(instruction):
@@ -68,14 +87,27 @@ def run_intcode(intcode):
             opcode_3(intcode, i)
             i += 2
         elif instruction[-1] == 4 and instruction[-2] == 0:
-            opcode4(intcode, i)
+            opcode_4(intcode, i)
             i += 2
+        elif instruction[-1] == 5 and instruction[-2] == 0:
+            opcode_5(intcode, i)
+            i += 4
+        elif instruction[-1] == 6 and instruction[-2] == 0:
+            opcode_6(intcode, i)
+            i += 4
+        elif instruction[-1] == 7 and instruction[-2] == 0:
+            opcode_7(intcode, i)
+            i += 4
+        elif instruction[-1] == 8 and instruction[-2] == 0:
+            opcode_8(intcode, i)
+            i += 4
         else:
             print("Program broke!")
             break
 
 
 intcode = read_and_parse(fn)
+# intcode = [1101,100,-1,4,0]
 run_intcode(intcode)
 print(intcode[0])
 #print(parse_instruction(1002))
