@@ -29,37 +29,67 @@ def opcode_1(series, index, instruction):
     input_1, input_2 = find_opcode_inputs(series, index, instruction)
     series[series[index+3]] = (int(input_1)
                             + int(input_2)) # 3rd param is always 0
+    index += 4
+    return index
 
 def opcode_2(series, index, instruction):
     """Multiplies numbers in appropriate cell indices"""
     input_1, input_2 = find_opcode_inputs(series, index, instruction)
     series[series[index+3]] = input_1 * input_2 # 3rd param is always 0
+    index += 4
+    return index
 
 def opcode_3(series, index):
     """Takes an input and stores it at an index"""
     number = input("What is the input? ")
     series[series[index+1]] = number
+    index += 2
+    return index
 
 def opcode_4(series, index):
     """Outputs the value at an index"""
     output = series[series[index+1]]
     print(f"Output from index {index}: {output}")
+    index += 2
+    return index
 
-def opcode_5(series, index):
+def opcode_5(series, index, instruction):
     """Pass"""
-    pass
+    input_1, input_2 = find_opcode_inputs(series, index, instruction)
+    if input_1 != 0:
+        index = input_2
+    else:
+        index += 3
+    return index
 
-def opcode_6(series, index):
+def opcode_6(series, index, instruction):
     """Pass"""
-    pass
+    input_1, input_2 = find_opcode_inputs(series, index, instruction)
+    if input_1 == 0:
+        index = input_2
+    else:
+        index += 3
+    return index
 
-def opcode_7(series, index):
+def opcode_7(series, index, instruction):
     """Pass"""
-    pass
+    input_1, input_2 = find_opcode_inputs(series, index, instruction)
+    if input_1 < input_2:
+        series[series[index+3]] = 1
+    else:
+        series[series[index+3]] = 0
+    index += 4
+    return index
 
-def opcode_8(series, index):
+def opcode_8(series, index, instruction):
     """Pass"""
-    pass
+    input_1, input_2 = find_opcode_inputs(series, index, instruction)
+    if input_1 == input_2:
+        series[series[index+3]] = 1
+    else:
+        series[series[index+3]] = 0
+    index += 4
+    return index
 
 def parse_instruction(instruction):
     """Reads opcode instruction and parses into units, reversed"""
@@ -78,29 +108,21 @@ def run_intcode(intcode):
         if instruction[-1] == 9 and instruction[-2] == 9:
             intcode_running = False
         elif instruction[-1] == 1 and instruction[-2] == 0:
-            opcode_1(intcode, i, instruction)
-            i += 4
+            i = opcode_1(intcode, i, instruction)
         elif instruction[-1] == 2 and instruction[-2] == 0:
-            opcode_2(intcode, i, instruction)
-            i += 4
+            i = opcode_2(intcode, i, instruction)
         elif instruction[-1] == 3 and instruction[-2] == 0:
-            opcode_3(intcode, i)
-            i += 2
+            i = opcode_3(intcode, i)
         elif instruction[-1] == 4 and instruction[-2] == 0:
-            opcode_4(intcode, i)
-            i += 2
+            i = opcode_4(intcode, i)
         elif instruction[-1] == 5 and instruction[-2] == 0:
-            opcode_5(intcode, i)
-            i += 4
+            i = opcode_5(intcode, i, instruction)
         elif instruction[-1] == 6 and instruction[-2] == 0:
-            opcode_6(intcode, i)
-            i += 4
+            i = opcode_6(intcode, i, instruction)
         elif instruction[-1] == 7 and instruction[-2] == 0:
-            opcode_7(intcode, i)
-            i += 4
+            i = opcode_7(intcode, i, instruction)
         elif instruction[-1] == 8 and instruction[-2] == 0:
-            opcode_8(intcode, i)
-            i += 4
+            i = opcode_8(intcode, i, instruction)
         else:
             print("Program broke!")
             break
